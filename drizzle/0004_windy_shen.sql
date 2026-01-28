@@ -1,0 +1,1 @@
+ALTER TABLE "code" ADD COLUMN "email_send" boolean DEFAULT false NOT NULL;

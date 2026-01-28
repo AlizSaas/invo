@@ -1,0 +1,1 @@
+ALTER TABLE "code" ADD COLUMN "ai_generated" boolean DEFAULT false NOT NULL;

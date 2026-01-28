@@ -1,0 +1,61 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tanstack-start-app",
+	"compatibility_date": "2025-09-02",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"main": "./src/server.ts",
+	"vars": {
+		"MY_VAR": "Hello from Cloudflare",
+		"BETTER_AUTH_URL": "https://tanstack-start-app.alizdevs.workers.dev/"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "88f238fcbe0f42de925e2420fd9af219"
+		}
+	],
+	"queues": {
+		"producers": [
+			{
+				"binding": "MY_QUEUE",
+				"queue": "codes-queue",
+				"remote": true
+			}
+		],
+		"consumers": [
+			{
+				"queue": "codes-queue",
+				"dead_letter_queue": "my-queue-dlq"
+			}
+		]
+	},
+	"ai": {
+		"binding": "AI",
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "CODE_SCHEDULAR",
+				"class_name": "CodeEvalutionScheduler"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": ["CodeEvalutionScheduler"]
+		}
+	],
+	"workflows": [
+		{
+			"binding": "CODE_WORKFLOW",
+			"name": "code-workflow",
+			"class_name": "CodeEvalutionWorkflow"
+
+		}
+	]
+
+
+}

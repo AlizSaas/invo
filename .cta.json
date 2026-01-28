@@ -1,0 +1,24 @@
+{
+  "projectName": "bladecf",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "pnpm",
+  "tailwind": true,
+  "addOnOptions": {
+    "drizzle": {
+      "database": "postgresql"
+    }
+  },
+  "git": true,
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": [
+    "eslint",
+    "cloudflare",
+    "start",
+    "drizzle",
+    "shadcn",
+    "better-auth",
+    "tanstack-query"
+  ]
+}
