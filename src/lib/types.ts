@@ -2,7 +2,11 @@
 import z from 'zod';
 import type { User as BetterAuthUser } from 'better-auth/types';
 import { INVOICE_STATUSES, CURRENCIES, DISCOUNT_TYPES, PAYMENT_TERMS, REMINDER_TYPES, INVOICE_EVENT_TYPES, TIMEZONES } from './constant';
-import { clientSchema, createClientSchema, updateClientSchema, invoiceSchema, invoiceItemSchema, createInvoiceSchema, updateInvoiceSchema, invoiceWithClientSchema, createInvoiceItemSchema, invoiceEventSchema, publicTokenSchema, paymentSchema, settingsSchema, updateSettingsSchema, dashboardKPIsSchema, invoiceFilterSchema, reminderSchema, apiErrorSchema, signUpSchema, signInSchema, verifyMagicLinkSchema } from './schema.type';
+import { clientSchema, createClientSchema, updateClientSchema, invoiceSchema, invoiceItemSchema, createInvoiceSchema, 
+  updateInvoiceSchema, invoiceWithClientSchema, createInvoiceItemSchema,
+   invoiceEventSchema, publicTokenSchema, paymentSchema, settingsSchema, 
+ dashboardKPIsSchema, invoiceFilterSchema, reminderSchema, apiErrorSchema, signUpSchema, signInSchema, verifyMagicLinkSchema } from './schema.type';
+import { updateSettingsSchema } from '@/data/setting/setting';
 export const loginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8),

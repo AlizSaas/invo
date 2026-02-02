@@ -204,16 +204,7 @@ export const settingsSchema = z.object({
   updated_at: dateSchema,
 });
 
-export const updateSettingsSchema = z.object({
-  business_name: z.string().max(200).optional().nullable(),
-  business_email: z.string().email().optional().nullable(),
-  business_address: z.string().max(500).optional().nullable(),
-  default_currency: currencySchema.optional(),
-  default_payment_terms: paymentTermsSchema.optional(),
-  timezone: z.enum(TIMEZONES).optional(),
-  email_from_name: z.string().max(100).optional().nullable(),
-  invoice_prefix: z.string().max(10).optional(),
-});
+
 
 // ============ Dashboard Schemas ============
 
