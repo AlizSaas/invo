@@ -29,7 +29,7 @@ export function InvoiceDetailPage({invoiceId}: {invoiceId: string}) {
 
   const queryClient = useQueryClient();
 
-const { data: invoice, isLoading } = useQuery(invoiceQueryOptions(invoiceId));
+const { data: invoice, isLoading } = useQuery(invoiceQueryOptions(invoiceId))
 const { data: settings } = useQuery(settingsQueryOptions());
 
 const sendMutation = useMutation({

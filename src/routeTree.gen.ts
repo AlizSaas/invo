@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
 import { Route as AppInvoicesIndexRouteImport } from './routes/_app/invoices/index'
 import { Route as AppClientsIndexRouteImport } from './routes/_app/clients/index'
+import { Route as ApiSettingsLogoRouteImport } from './routes/api/settings/logo'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as AppInvoicesNewRouteImport } from './routes/_app/invoices/new'
 import { Route as AppClientsNewRouteImport } from './routes/_app/clients/new'
@@ -36,6 +38,11 @@ const AppRouteRoute = AppRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUploadRoute = ApiUploadRouteImport.update({
+  id: '/api/upload',
+  path: '/api/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -67,6 +74,11 @@ const AppClientsIndexRoute = AppClientsIndexRouteImport.update({
   id: '/clients/',
   path: '/clients/',
   getParentRoute: () => AppRouteRoute,
+} as any)
+const ApiSettingsLogoRoute = ApiSettingsLogoRouteImport.update({
+  id: '/api/settings/logo',
+  path: '/api/settings/logo',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -103,10 +115,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
+  '/api/upload': typeof ApiUploadRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/clients/new': typeof AppClientsNewRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/settings/logo': typeof ApiSettingsLogoRoute
   '/clients/': typeof AppClientsIndexRoute
   '/invoices/': typeof AppInvoicesIndexRoute
   '/login/': typeof AuthLoginIndexRoute
@@ -118,10 +132,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
+  '/api/upload': typeof ApiUploadRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/clients/new': typeof AppClientsNewRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/settings/logo': typeof ApiSettingsLogoRoute
   '/clients': typeof AppClientsIndexRoute
   '/invoices': typeof AppInvoicesIndexRoute
   '/login': typeof AuthLoginIndexRoute
@@ -136,10 +152,12 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/api/upload': typeof ApiUploadRoute
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/clients/new': typeof AppClientsNewRoute
   '/_app/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/settings/logo': typeof ApiSettingsLogoRoute
   '/_app/clients/': typeof AppClientsIndexRoute
   '/_app/invoices/': typeof AppInvoicesIndexRoute
   '/_auth/login/': typeof AuthLoginIndexRoute
@@ -153,10 +171,12 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/settings'
+    | '/api/upload'
     | '/clients/$id'
     | '/clients/new'
     | '/invoices/new'
     | '/api/auth/$'
+    | '/api/settings/logo'
     | '/clients/'
     | '/invoices/'
     | '/login/'
@@ -168,10 +188,12 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/settings'
+    | '/api/upload'
     | '/clients/$id'
     | '/clients/new'
     | '/invoices/new'
     | '/api/auth/$'
+    | '/api/settings/logo'
     | '/clients'
     | '/invoices'
     | '/login'
@@ -185,10 +207,12 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_app/dashboard'
     | '/_app/settings'
+    | '/api/upload'
     | '/_app/clients/$id'
     | '/_app/clients/new'
     | '/_app/invoices/new'
     | '/api/auth/$'
+    | '/api/settings/logo'
     | '/_app/clients/'
     | '/_app/invoices/'
     | '/_auth/login/'
@@ -201,7 +225,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  ApiUploadRoute: typeof ApiUploadRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiSettingsLogoRoute: typeof ApiSettingsLogoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/upload': {
+      id: '/api/upload'
+      path: '/api/upload'
+      fullPath: '/api/upload'
+      preLoaderRoute: typeof ApiUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/settings': {
@@ -268,6 +301,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/clients/'
       preLoaderRoute: typeof AppClientsIndexRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/api/settings/logo': {
+      id: '/api/settings/logo'
+      path: '/api/settings/logo'
+      fullPath: '/api/settings/logo'
+      preLoaderRoute: typeof ApiSettingsLogoRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -360,7 +400,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  ApiUploadRoute: ApiUploadRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiSettingsLogoRoute: ApiSettingsLogoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

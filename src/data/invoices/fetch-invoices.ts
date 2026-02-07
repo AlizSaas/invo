@@ -30,9 +30,11 @@ export const invoicesQueryOptions = (filters: {
 };
 
 // Query options for single invoice by ID
-export const invoiceQueryOptions = (id: string) => {
+export const invoiceQueryOptions = (id:string, enabled: boolean ) => {
   return queryOptions({
     queryKey: INVOICES_QUERY_KEY.invoice(id),
     queryFn: () => getInvoiceByIdFn({ data: { id } }),
+    enabled: enabled,
   });
+
 };

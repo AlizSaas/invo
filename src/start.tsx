@@ -8,6 +8,7 @@ declare module "@tanstack/react-start" {
        env: Env;
         waitUntil: (p: Promise<any>) => void;
         fromFetch: boolean;
+        request: Request;
          
         
         
