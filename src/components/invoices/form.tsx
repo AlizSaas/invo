@@ -28,13 +28,13 @@ import {  clientsQueryOptions } from '@/data/clients/fetch-clients';
 import { CURRENCIES, DISCOUNT_TYPES, PAYMENT_TERMS } from '@/lib/constant';
 import { toast } from 'sonner';
 import { settingsQueryOptions } from '@/data/setting/fetch-setting';
-import { invoiceQueryOptions, INVOICES_QUERY_KEY, invoicesQueryOptions } from '@/data/invoices/fetch-invoices';
+import { invoiceQueryOptions, INVOICES_QUERY_KEY, } from '@/data/invoices/fetch-invoices';
 import { createInvoiceFn, updateInvoiceFn } from '@/data/invoices/invoices';
 
 
 type InvoiceFormData = z.infer<typeof createInvoiceSchema>;
 
-export function InvoiceFormPage({invoiceId}: {invoiceId?: string}) {
+export function InvoiceFormPage({invoiceId}: {invoiceId: string}) {
 
   const isEditing = !!invoiceId; // Determine if we're editing based on presence of invoiceId
   const navigate = useNavigate();
@@ -45,10 +45,11 @@ export function InvoiceFormPage({invoiceId}: {invoiceId?: string}) {
 
   const { data: settings } = useQuery(settingsQueryOptions());
 
-  const { data: invoiceResponse, isLoading: isLoadingInvoice } = useQuery(invoicesQueryOptions({
-    enabled: isEditing, // only fetch if editing
-  }));
-  const invoice = invoiceResponse?.data?.[0];
+  const { data: invoice, isLoading: isLoadingInvoice } = useQuery(
+    invoiceQueryOptions(invoiceId!, isEditing),
+    
+    );
+
 
   const {
     register,
@@ -89,6 +90,7 @@ export function InvoiceFormPage({invoiceId}: {invoiceId?: string}) {
     watchDiscountValue
   );
 
+
   // Set defaults from settings
   useEffect(() => {
     if (settings && !isEditing) {
@@ -127,27 +129,40 @@ export function InvoiceFormPage({invoiceId}: {invoiceId?: string}) {
   }, [settings, isEditing, setValue]);
 
   // Load existing invoice data
-  useEffect(() => {
-    if (invoice && isEditing) {
-      reset({
-        client_id: invoice.client_id,
-        invoice_number: invoice.invoice_number,
-        issue_date: invoice.issue_date instanceof Date 
-          ? invoice.issue_date.toISOString().split('T')[0]
-          : invoice.issue_date,
-        due_date: invoice.due_date instanceof Date
-          ? invoice.due_date.toISOString().split('T')[0]
-          : invoice.due_date,
-        currency: invoice.currency as 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'CHF' | 'JPY',
-        discount_type: undefined,
-        discount_value: undefined,
-        notes: invoice.notes || '',
-        payment_terms: undefined,
-        reminders_enabled: false,
-        items: [],
-      });
-    }
-  }, [invoice, isEditing, reset]);
+ useEffect(() => {
+  if (invoice && isEditing) {
+    reset({
+      client_id: invoice.clientId,
+      invoice_number: invoice.invoiceNumber,
+      issue_date: invoice.issueDate instanceof Date 
+        ? invoice.issueDate.toISOString().split('T')[0]
+        : invoice.issueDate,
+      due_date: invoice.dueDate instanceof Date
+        ? invoice.dueDate.toISOString().split('T')[0]
+        : invoice.dueDate,
+      currency: invoice.currency as 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'CHF' | 'JPY',
+      discount_type: invoice.discountType || undefined,
+      discount_value: invoice.discountValue ? Number(invoice.discountValue) : undefined,
+      notes: invoice.notes || '',
+      payment_terms: invoice.paymentTerms as 'due_on_receipt' | 'net_7' | 'net_14' | 'net_30' | 'net_60' | 'net_90' | null | undefined,
+      reminders_enabled: invoice.remindersEnabled || false,
+      items: invoice.items?.length
+        ? invoice.items.map((item) => ({
+            description: item.description,
+            quantity: Number(item.quantity),       // string → number
+            unit_price: Number(item.unitPrice),    // string → number
+            tax_rate: item.taxRate ? Number(item.taxRate) : 0, // string | null → number
+            
+          }))
+        : [{ description: '', quantity: 1, unit_price: 0 }],
+    });
+  }
+}, [invoice, isEditing, reset]);
+
+// Remove this line that's sitting loose in the component:
+// console.log("Loaded invoice data:", invoice);
+
+// Add this instead — only logs when invoice data actually changes:
 
 const createMutation = useMutation({
   mutationFn: createInvoiceFn,
@@ -165,32 +180,33 @@ const createMutation = useMutation({
 
 const updateMutation = useMutation({
   mutationFn: updateInvoiceFn,
-  onSuccess: (data) => {
+  onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ["invoices"] });
     // Invalidate specific invoice query as well
-    queryClient.invalidateQueries(invoiceQueryOptions(invoiceId!));
+    queryClient.invalidateQueries({ queryKey: INVOICES_QUERY_KEY.invoice(invoiceId!) });
     toast.success("Invoice updated successfully");
     // navigate isn't strictly necessary if you just want to stay on the page, 
     // but if you do navigate, ensure the ID is correct
-    navigate({ to: `/invoices/${data.id}` });
+    navigate({ to: `/invoices/${invoiceId}` });
   },
   onError: (error: any) => {
     toast.error(error.message);
   },
 });
-  const onSubmit = (data: InvoiceFormData) => {
-    // Ensure discount_type is undefined, not null
-    const cleanedData = {
-      ...data,
-      discount_type: data.discount_type || undefined,
-    };
-    
-    if (isEditing) {
-      updateMutation.mutate({ data: { id: invoiceId, data: cleanedData } });
-    } else {
-      createMutation.mutate({ data: cleanedData });
-    }
+const onSubmit = (data: InvoiceFormData) => {
+  console.log("Form data before submit:", JSON.stringify(data, null, 2)); // <-- add this
+
+  const cleanedData = {
+    ...data,
+    discount_type: data.discount_type || undefined,
   };
+
+  if (isEditing) {
+    updateMutation.mutate({ data: { id: invoiceId, data: cleanedData } });
+  } else {
+    createMutation.mutate({ data: cleanedData });
+  }
+};
 
   if (isLoadingClients || (isEditing && isLoadingInvoice)) { // Show loading only if editing and invoice is loading
     return (

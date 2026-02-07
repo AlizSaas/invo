@@ -256,7 +256,7 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
 
     // Handle items update
     if (data.items && existingInvoice.status !== "draft") {
-      throw new Error("Cannot modify items on a non-draft invoice");
+      throw new ValidationError("Cannot modify items on a non-draft invoice");
     }
 
     let totals;
@@ -288,18 +288,18 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
 
     // Build update object
     const updateValues: any = { updatedAt: now };
-    if (data.client_id) updateValues.clientId = data.client_id;
-    if (data.invoice_number) updateValues.invoiceNumber = data.invoice_number;
-    if (data.status) updateValues.status = data.status;
-    if (data.issue_date) updateValues.issueDate = new Date(data.issue_date);
-    if (data.due_date) updateValues.dueDate = new Date(data.due_date);
-    if (data.currency) updateValues.currency = data.currency;
+    if (data.client_id !== undefined) updateValues.clientId = data.client_id;
+    if (data.invoice_number !== undefined) updateValues.invoiceNumber = data.invoice_number;
+    if (data.status !== undefined) updateValues.status = data.status;
+    if (data.issue_date !== undefined) updateValues.issueDate = new Date(data.issue_date);
+    if (data.due_date !== undefined) updateValues.dueDate = new Date(data.due_date);
+    if (data.currency !== undefined) updateValues.currency = data.currency;
     if (data.notes !== undefined) updateValues.notes = data.notes;
     if (data.payment_terms !== undefined)
       updateValues.paymentTerms = data.payment_terms;
     if (data.reminders_enabled !== undefined)
       updateValues.remindersEnabled = data.reminders_enabled;
-    if (data.discount_type) updateValues.discountType = data.discount_type;
+    if (data.discount_type !== undefined) updateValues.discountType = data.discount_type;
     if (data.discount_value !== undefined)
       updateValues.discountValue = data.discount_value?.toString();
 
@@ -310,11 +310,10 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
       updateValues.total = totals.total.toString();
     }
 
-    const [updated] = await db
+    await db
       .update(invoices)
       .set(updateValues)
-      .where(eq(invoices.id, id))
-      .returning();
+      .where(eq(invoices.id, id));
 
     // Log status change
     if (data.status && data.status !== existingInvoice.status) {
@@ -330,8 +329,14 @@ export const updateInvoiceFn = createServerFn({ method: "POST" })
       });
     }
 
-    return updated;
+    // Fetch complete invoice with details
+    const invoiceWithDetails = await getInvoiceWithDetails(db, id, user.id);
+
+    return invoiceWithDetails;
   });
+
+
+
 
   export const sendInvoiceFn = createServerFn({ method: "POST" })
     .middleware([authMiddleware])

@@ -28,6 +28,7 @@ setAuth({
               env,
       waitUntil: executionCtx.waitUntil.bind(executionCtx),    
         fromFetch: true,
+        request: request,
         
 
       },

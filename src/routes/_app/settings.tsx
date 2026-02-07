@@ -1,17 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
-
-
-
-
-
-
 import { useEffect } from 'react';
-import {  useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-
-
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,13 +19,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { settingsQueryOptions } from '@/data/setting/fetch-setting';
-
 import { UpdateSettings } from '@/lib/types';
 import { PageHeader } from './clients';
 import { CURRENCIES, PAYMENT_TERMS, TIMEZONES } from '@/lib/constant';
 import { toast } from 'sonner';
 import { updateSettingFn, updateSettingsSchema } from '@/data/setting/setting';
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const Route = createFileRoute('/_app/settings')({
   component: SettingsPage,
@@ -42,11 +33,62 @@ export const Route = createFileRoute('/_app/settings')({
   ),
 })
 
+// Move uploadLogo function OUTSIDE the component
+async function uploadLogo(formData: FormData) {
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = (await response.json()) as { error?: string };
+    throw new Error(error.error || 'Upload failed');
+  }
+
+  return response.json();
+}
+
 export function SettingsPage() {
   const queryClient = useQueryClient();
-
-
   const { data: settings, isLoading } = useSuspenseQuery(settingsQueryOptions());
+
+  // Define uploadLogoMutation hook INSIDE the component
+  const uploadLogoMutation = useMutation({
+    mutationFn: uploadLogo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+      toast.success('Logo updated successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Failed to upload logo');
+      console.error('Logo upload error:', error);
+    },
+  });
+
+const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  // Validate file type
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/svg+xml'];
+  if (!allowedTypes.includes(file.type)) {
+    toast.error('Invalid file type. Please use PNG, JPG, or SVG.');
+    e.target.value = '';
+    return;
+  }
+
+  // Validate file size (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    toast.error('File size must be less than 2MB. Please choose a smaller image.');
+    e.target.value = '';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('logo', file);
+  uploadLogoMutation.mutate(formData);
+  e.target.value = '';
+}
 
   const {
     register,
@@ -72,7 +114,7 @@ export function SettingsPage() {
         invoicePrefix: settings.invoicePrefix,
       });
     }
-  }, [settings, reset]); 
+  }, [settings, reset]);  // Reset form values when settings data is loaded or updated
 
   const updateMutation = useMutation({
     mutationFn: updateSettingFn,
@@ -108,7 +150,7 @@ export function SettingsPage() {
             </Card>
           ))}
         </div>
-      </div >
+      </div>
     );
   }
 
@@ -151,8 +193,8 @@ export function SettingsPage() {
             <div className="space-y-2">
               <Label htmlFor="businessAddress">Business Address</Label>
               <Textarea
-                    id="businessAddress"
-                    placeholder="Street address, city, country..."
+                id="businessAddress"
+                placeholder="Street address, city, country..."
                 rows={3}
                 {...register('businessAddress')}
               />
@@ -228,6 +270,43 @@ export function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Logo Upload Section */}
+            <div className="flex flex-row items-center gap-6">
+              <div className="relative">
+                <Avatar className="h-24 w-24 border">
+                  <AvatarImage src={settings?.logoUrl || ''} className="object-cover" />
+                  <AvatarFallback className="text-2xl">
+                    {settings?.businessName?.slice(0, 2).toUpperCase() || 'BZ'}
+                  </AvatarFallback>
+                </Avatar>
+                
+                {uploadLogoMutation.isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-full">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="logo-upload" className="font-medium">
+                  Company Logo
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="logo-upload"
+                    type="file"
+                    accept="image/png, image/jpeg, image/svg+xml"
+                    className="w-full max-w-62.5 cursor-pointer"
+                    onChange={handleLogoUpload}
+                    disabled={uploadLogoMutation.isPending}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Max size 2MB. Formats: PNG, JPG, SVG.
+                </p>
+              </div>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Timezone</Label>
@@ -250,7 +329,7 @@ export function SettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="emailFromName">Email From Name</Label>
                 <Input
-                  id="emailFromName   "
+                  id="emailFromName"
                   placeholder="Your name or business name"
                   {...register('emailFromName')}
                 />
