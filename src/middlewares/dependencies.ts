@@ -37,3 +37,17 @@ export const authMiddleware = createMiddleware()
       },
     });
   }); 
+
+  export const publicMiddleware = createMiddleware({}).server(
+  async ({ next, context }) => {
+    const db = getDb();
+
+    return next({
+      context: {
+        ...context,
+        db,
+      },
+    });
+  }
+);
+  

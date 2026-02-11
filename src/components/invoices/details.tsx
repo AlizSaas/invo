@@ -29,8 +29,10 @@ export function InvoiceDetailPage({invoiceId}: {invoiceId: string}) {
 
   const queryClient = useQueryClient();
 
-const { data: invoice, isLoading } = useQuery(invoiceQueryOptions(invoiceId))
+const { data: invoice, isLoading } = useQuery(invoiceQueryOptions(invoiceId, true))
 const { data: settings } = useQuery(settingsQueryOptions());
+
+console.log('this is the public token', invoice?.publicToken)
 
 const sendMutation = useMutation({
   mutationFn: () => sendInvoiceFn({ data: { invoiceId: invoiceId } }),
@@ -183,14 +185,14 @@ const duplicateMutation = useMutation({
               <CardTitle>Client</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="font-medium">{invoice.clients.name}</p>
-              {invoice.clients.company && (
-                <p className="text-muted-foreground">{invoice.clients.company}</p>
+              <p className="font-medium">{invoice.client.name}</p>
+              {invoice.client.company && (
+                <p className="text-muted-foreground">{invoice.client.company}</p>
               )}
-              <p className="text-muted-foreground">{invoice.clients.email}</p>
-              {invoice.clients.address && (
+              <p className="text-muted-foreground">{invoice.client.email}</p>
+              {invoice.client.address && (
                 <p className="text-muted-foreground whitespace-pre-line mt-2">
-                  {invoice.clients.address}
+                  {invoice.client.address}
                 </p>
               )}
             </CardContent>

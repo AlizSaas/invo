@@ -36,7 +36,7 @@ import { notFound } from "@tanstack/react-router";
                 .where(eq(settings.userId, user.id))
                 .then((rows) => rows[0]);
         }
-console.log("User Settings:", userSettings);
+
  if (!userSettings.defaultCurrency) {
             await db.update(settings).set({ defaultCurrency: 'USD' }).where(eq(settings.userId, user.id));
             userSettings.defaultCurrency = 'USD';
