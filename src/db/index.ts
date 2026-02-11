@@ -13,6 +13,7 @@ export function createDb(databaseUrl: string) {
   return db;
 }
 
+
 export function getDb(): Database {
   if (!_db) {
     throw new Error("Database not initialized. server.ts must run first.");

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvoiceTokenRouteImport } from './routes/invoice/$token'
 import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
@@ -26,6 +27,7 @@ import { Route as AppClientsNewRouteImport } from './routes/_app/clients/new'
 import { Route as AppClientsIdRouteImport } from './routes/_app/clients/$id'
 import { Route as AppInvoicesIdIndexRouteImport } from './routes/_app/invoices/$id/index'
 import { Route as AppInvoicesIdEditRouteImport } from './routes/_app/invoices/$id/edit'
+import { Route as ApiPublicInvoiceTokenPdfRouteImport } from './routes/api/public/invoice/$token.pdf'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
@@ -38,6 +40,11 @@ const AppRouteRoute = AppRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoiceTokenRoute = InvoiceTokenRouteImport.update({
+  id: '/invoice/$token',
+  path: '/invoice/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiUploadRoute = ApiUploadRouteImport.update({
@@ -110,12 +117,19 @@ const AppInvoicesIdEditRoute = AppInvoicesIdEditRouteImport.update({
   path: '/invoices/$id/edit',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApiPublicInvoiceTokenPdfRoute =
+  ApiPublicInvoiceTokenPdfRouteImport.update({
+    id: '/api/public/invoice/$token/pdf',
+    path: '/api/public/invoice/$token/pdf',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/api/upload': typeof ApiUploadRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/clients/new': typeof AppClientsNewRoute
   '/invoices/new': typeof AppInvoicesNewRoute
@@ -127,12 +141,14 @@ export interface FileRoutesByFullPath {
   '/signup/': typeof AuthSignupIndexRoute
   '/invoices/$id/edit': typeof AppInvoicesIdEditRoute
   '/invoices/$id/': typeof AppInvoicesIdIndexRoute
+  '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRoute
   '/settings': typeof AppSettingsRoute
   '/api/upload': typeof ApiUploadRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
   '/clients/$id': typeof AppClientsIdRoute
   '/clients/new': typeof AppClientsNewRoute
   '/invoices/new': typeof AppInvoicesNewRoute
@@ -144,6 +160,7 @@ export interface FileRoutesByTo {
   '/signup': typeof AuthSignupIndexRoute
   '/invoices/$id/edit': typeof AppInvoicesIdEditRoute
   '/invoices/$id': typeof AppInvoicesIdIndexRoute
+  '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,6 +170,7 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/settings': typeof AppSettingsRoute
   '/api/upload': typeof ApiUploadRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
   '/_app/clients/$id': typeof AppClientsIdRoute
   '/_app/clients/new': typeof AppClientsNewRoute
   '/_app/invoices/new': typeof AppInvoicesNewRoute
@@ -164,6 +182,7 @@ export interface FileRoutesById {
   '/_auth/signup/': typeof AuthSignupIndexRoute
   '/_app/invoices/$id/edit': typeof AppInvoicesIdEditRoute
   '/_app/invoices/$id/': typeof AppInvoicesIdIndexRoute
+  '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -172,6 +191,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/api/upload'
+    | '/invoice/$token'
     | '/clients/$id'
     | '/clients/new'
     | '/invoices/new'
@@ -183,12 +203,14 @@ export interface FileRouteTypes {
     | '/signup/'
     | '/invoices/$id/edit'
     | '/invoices/$id/'
+    | '/api/public/invoice/$token/pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
     | '/settings'
     | '/api/upload'
+    | '/invoice/$token'
     | '/clients/$id'
     | '/clients/new'
     | '/invoices/new'
@@ -200,6 +222,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/invoices/$id/edit'
     | '/invoices/$id'
+    | '/api/public/invoice/$token/pdf'
   id:
     | '__root__'
     | '/'
@@ -208,6 +231,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/settings'
     | '/api/upload'
+    | '/invoice/$token'
     | '/_app/clients/$id'
     | '/_app/clients/new'
     | '/_app/invoices/new'
@@ -219,6 +243,7 @@ export interface FileRouteTypes {
     | '/_auth/signup/'
     | '/_app/invoices/$id/edit'
     | '/_app/invoices/$id/'
+    | '/api/public/invoice/$token/pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -226,8 +251,10 @@ export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ApiUploadRoute: typeof ApiUploadRoute
+  InvoiceTokenRoute: typeof InvoiceTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiSettingsLogoRoute: typeof ApiSettingsLogoRoute
+  ApiPublicInvoiceTokenPdfRoute: typeof ApiPublicInvoiceTokenPdfRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoice/$token': {
+      id: '/invoice/$token'
+      path: '/invoice/$token'
+      fullPath: '/invoice/$token'
+      preLoaderRoute: typeof InvoiceTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/upload': {
@@ -351,6 +385,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInvoicesIdEditRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/api/public/invoice/$token/pdf': {
+      id: '/api/public/invoice/$token/pdf'
+      path: '/api/public/invoice/$token/pdf'
+      fullPath: '/api/public/invoice/$token/pdf'
+      preLoaderRoute: typeof ApiPublicInvoiceTokenPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -401,8 +442,10 @@ const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ApiUploadRoute: ApiUploadRoute,
+  InvoiceTokenRoute: InvoiceTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiSettingsLogoRoute: ApiSettingsLogoRoute,
+  ApiPublicInvoiceTokenPdfRoute: ApiPublicInvoiceTokenPdfRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

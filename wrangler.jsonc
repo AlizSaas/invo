@@ -30,5 +30,21 @@
 			"bucket_name": "invo-storage",
 			"remote": true
 		}
-	]
+	],
+	 "durable_objects": {
+    "bindings": [
+      {
+        "name": "REMINDER_SCHEDULER",
+        "class_name": "ReminderScheduler"
+      }
+    ]
+  },
+
+
+	"migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["ReminderScheduler"]
+    }
+  ]
 }

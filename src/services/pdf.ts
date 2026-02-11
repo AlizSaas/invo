@@ -458,17 +458,35 @@ export class PDFService {
     `;
   }
 
-  async storePDF(
-    userId: string,
-    invoiceId: string,
-    invoiceNumber: string,
-    pdfData: ArrayBuffer,
-    isPdf: boolean
-  ): Promise<string> {
-    const extension = isPdf ? 'pdf' : 'html';
-    const contentType = isPdf ? 'application/pdf' : 'text/html';
-    const key = `${userId}/invoices/${invoiceId}/${invoiceNumber}.${extension}`;
+ async storePDF(
+  userId: string,
+  invoiceId: string,
+  invoiceNumber: string,
+  pdfData: ArrayBuffer,
+  isPdf: boolean
+): Promise<string> {
+  const extension = isPdf ? 'pdf' : 'html';
+  const contentType = isPdf ? 'application/pdf' : 'text/html';
+  const key = `${userId}/invoices/${invoiceId}/${invoiceNumber}.${extension}`;
+  
+  try {
+    console.log('=== R2 Storage Debug ===');
+    console.log('Key:', key);
+    console.log('Data size:', pdfData.byteLength, 'bytes');
+    console.log('Content type:', contentType);
+    console.log('Extension:', extension);
+    console.log('Is PDF:', isPdf);
     
+    // Validate inputs
+    if (!pdfData || pdfData.byteLength === 0) {
+      throw new Error('PDF data is empty or invalid');
+    }
+
+    if (!this.storage) {
+      throw new Error('R2 STORAGE binding is not available');
+    }
+
+    // Try the put operation
     await this.storage.put(key, pdfData, {
       httpMetadata: {
         contentType,
@@ -476,8 +494,20 @@ export class PDFService {
       },
     });
 
+    console.log('✅ Successfully stored in R2:', key);
     return key;
+    
+  } catch (error) {
+    console.error('=== R2 Storage Error ===');
+    console.error('Full error:', error);
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error name:', error instanceof Error ? error.name : 'unknown');
+    console.error('Error stack:', error instanceof Error ? error.stack : 'no stack');
+    
+    // Re-throw with more context
+    throw new Error(`Failed to store PDF in R2: ${error instanceof Error ? error.message : String(error)}`);
   }
+}
 
   async getPDF(userId: string, invoiceId: string, invoiceNumber: string): Promise<PDFResult | null> {
     const pdfKey = `${userId}/invoices/${invoiceId}/${invoiceNumber}.pdf`;
