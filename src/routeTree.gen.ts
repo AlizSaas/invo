@@ -20,6 +20,7 @@ import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index
 import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
 import { Route as AppInvoicesIndexRouteImport } from './routes/_app/invoices/index'
 import { Route as AppClientsIndexRouteImport } from './routes/_app/clients/index'
+import { Route as ApiWebhookStripeRouteImport } from './routes/api/webhook/stripe'
 import { Route as ApiSettingsLogoRouteImport } from './routes/api/settings/logo'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as AppInvoicesNewRouteImport } from './routes/_app/invoices/new'
@@ -82,6 +83,11 @@ const AppClientsIndexRoute = AppClientsIndexRouteImport.update({
   path: '/clients/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApiWebhookStripeRoute = ApiWebhookStripeRouteImport.update({
+  id: '/api/webhook/stripe',
+  path: '/api/webhook/stripe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSettingsLogoRoute = ApiSettingsLogoRouteImport.update({
   id: '/api/settings/logo',
   path: '/api/settings/logo',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/settings/logo': typeof ApiSettingsLogoRoute
+  '/api/webhook/stripe': typeof ApiWebhookStripeRoute
   '/clients/': typeof AppClientsIndexRoute
   '/invoices/': typeof AppInvoicesIndexRoute
   '/login/': typeof AuthLoginIndexRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/settings/logo': typeof ApiSettingsLogoRoute
+  '/api/webhook/stripe': typeof ApiWebhookStripeRoute
   '/clients': typeof AppClientsIndexRoute
   '/invoices': typeof AppInvoicesIndexRoute
   '/login': typeof AuthLoginIndexRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/_app/invoices/new': typeof AppInvoicesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/settings/logo': typeof ApiSettingsLogoRoute
+  '/api/webhook/stripe': typeof ApiWebhookStripeRoute
   '/_app/clients/': typeof AppClientsIndexRoute
   '/_app/invoices/': typeof AppInvoicesIndexRoute
   '/_auth/login/': typeof AuthLoginIndexRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/invoices/new'
     | '/api/auth/$'
     | '/api/settings/logo'
+    | '/api/webhook/stripe'
     | '/clients/'
     | '/invoices/'
     | '/login/'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/invoices/new'
     | '/api/auth/$'
     | '/api/settings/logo'
+    | '/api/webhook/stripe'
     | '/clients'
     | '/invoices'
     | '/login'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/_app/invoices/new'
     | '/api/auth/$'
     | '/api/settings/logo'
+    | '/api/webhook/stripe'
     | '/_app/clients/'
     | '/_app/invoices/'
     | '/_auth/login/'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   InvoiceTokenRoute: typeof InvoiceTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiSettingsLogoRoute: typeof ApiSettingsLogoRoute
+  ApiWebhookStripeRoute: typeof ApiWebhookStripeRoute
   ApiPublicInvoiceTokenPdfRoute: typeof ApiPublicInvoiceTokenPdfRoute
 }
 
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/clients/'
       preLoaderRoute: typeof AppClientsIndexRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/api/webhook/stripe': {
+      id: '/api/webhook/stripe'
+      path: '/api/webhook/stripe'
+      fullPath: '/api/webhook/stripe'
+      preLoaderRoute: typeof ApiWebhookStripeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/settings/logo': {
       id: '/api/settings/logo'
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvoiceTokenRoute: InvoiceTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiSettingsLogoRoute: ApiSettingsLogoRoute,
+  ApiWebhookStripeRoute: ApiWebhookStripeRoute,
   ApiPublicInvoiceTokenPdfRoute: ApiPublicInvoiceTokenPdfRoute,
 }
 export const routeTree = rootRouteImport

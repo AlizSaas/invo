@@ -45,6 +45,7 @@
     {
       "tag": "v1",
       "new_classes": ["ReminderScheduler"]
-    }
+    },
+	
   ]
 }
