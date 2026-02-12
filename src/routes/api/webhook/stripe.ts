@@ -166,7 +166,7 @@ export const Route = createFileRoute('/api/webhook/stripe')({
                     invoice.total,
                     invoice.currency as any,
                     now.toISOString(),
-                    bizSettings?.emailFromName
+                    bizSettings?.emailFromName ?? undefined
                   )
                 }
               } catch (err) {

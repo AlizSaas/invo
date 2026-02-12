@@ -1,4 +1,3 @@
-
 import { Currency } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { ExternalServiceError } from "@/utils/error";
@@ -11,21 +10,18 @@ interface ResendEmailOptions {
   from?: string;
 }
 
-
 export class Emailservice {
-    sendPaymentReceipt(email: string, invoiceNumber: string, arg2: string, total: string, arg4: any, arg5: string, emailFromName: string | null | undefined) {
-        throw new Error('Method not implemented.');
-    }
   private apiKey: string;
   private fromEmail: string;
   private logger;
 
-    constructor(apiKey: string, fromEmail: string) {
+  constructor(apiKey: string, fromEmail: string) {
     this.apiKey = apiKey;
     this.fromEmail = fromEmail;
     this.logger = createLogger();
   }
-    private async send(options: ResendEmailOptions): Promise<void> {
+
+  private async send(options: ResendEmailOptions): Promise<void> {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -48,6 +44,7 @@ export class Emailservice {
 
     this.logger.info('Email sent successfully', { to: options.to, subject: options.subject });
   }
+
   async sendInvoice(
     to: string,
     invoiceNumber: string,
@@ -62,7 +59,7 @@ export class Emailservice {
       to,
       from: fromName ? `${fromName} <${this.fromEmail}>` : this.fromEmail,
       subject: `Invoice ${invoiceNumber} from ${businessName || 'Kivo'}`,
-     html: `
+      html: `
 <!DOCTYPE html>
 <html>
   <head>
@@ -167,8 +164,121 @@ export class Emailservice {
   </body>
 </html>
 `
-
     });
   }
 
+  async sendPaymentReceipt(
+    to: string,
+    invoiceNumber: string,
+    businessName: string,
+    total: string,
+    currency: Currency,
+    paidAt: string,
+    fromName?: string
+  ): Promise<void> {
+    await this.send({
+      to,
+      from: fromName ? `${fromName} <${this.fromEmail}>` : this.fromEmail,
+      subject: `Payment received for Invoice ${invoiceNumber}`,
+      html: `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Receipt</title>
+  </head>
+
+  <body style="margin:0; padding:0; background-color:#f3f4f6;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f4f6; padding:24px 0;">
+      <tr>
+        <td align="center">
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; background:#ffffff; border-radius:10px; overflow:hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+            <!-- Header -->
+            <tr>
+              <td style="padding:24px 32px; background:#111827; color:#ffffff;">
+                <h1 style="margin:0; font-size:20px; font-weight:600;">
+                  ${businessName || 'Kivo'}
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding:32px; color:#111827;">
+
+                <!-- Success icon -->
+                <div style="text-align:center; margin-bottom:24px;">
+                  <div style="display:inline-block; background:#d1fae5; border-radius:50%; padding:12px;">
+                    <span style="font-size:24px;">✓</span>
+                  </div>
+                </div>
+
+                <h2 style="margin:0 0 8px 0; font-size:18px; font-weight:600; text-align:center;">
+                  Payment Received
+                </h2>
+                <p style="margin:0 0 24px 0; color:#6b7280; font-size:14px; text-align:center;">
+                  Thank you for your payment.
+                </p>
+
+                <!-- Details box -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb; border-radius:8px;">
+                  <tr>
+                    <td style="padding:16px;">
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="color:#6b7280; font-size:14px; padding-bottom:8px;">
+                            Invoice
+                          </td>
+                          <td align="right" style="font-size:14px; font-weight:500; padding-bottom:8px;">
+                            #${invoiceNumber}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="color:#6b7280; font-size:14px; padding-bottom:8px;">
+                            Amount Paid
+                          </td>
+                          <td align="right" style="font-size:18px; font-weight:600; padding-bottom:8px;">
+                            ${formatCurrency(Number(total), currency)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="color:#6b7280; font-size:14px;">
+                            Date
+                          </td>
+                          <td align="right" style="font-size:14px;">
+                            ${new Date(paidAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding:20px 32px; background:#f9fafb; color:#9ca3af; font-size:12px;">
+                This receipt was sent via <strong>Kivo</strong>.
+              </td>
+            </tr>
+
+          </table>
+
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`
+    });
+  }
 }

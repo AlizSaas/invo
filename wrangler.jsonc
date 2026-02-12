@@ -9,9 +9,8 @@
 		"enabled": true
 	}, // Enable Cloudflare Observability
 	"main": "./src/server.ts",
-	
 	"vars": {
-		"BETTER_AUTH_URL": "https://tanstack-start-app.alizdevs.workers.dev/",
+		"BETTER_AUTH_URL": "https://tanstack-start-app.alizdevs.workers.dev",
 		"CLOUDFLARE_ACCOUNT_ID": "04cb99e92f7e20dd5cafcdf75be555bc",
 		"EMAIL_FROM": "Invo Invoices <no-reply@alizmail.com>"
 	},
@@ -31,21 +30,20 @@
 			"remote": true
 		}
 	],
-	 "durable_objects": {
-    "bindings": [
-      {
-        "name": "REMINDER_SCHEDULER",
-        "class_name": "ReminderScheduler"
-      }
-    ]
-  },
-
-
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "REMINDER_SCHEDULER",
+				"class_name": "ReminderScheduler"
+			}
+		]
+	},
 	"migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["ReminderScheduler"]
-    },
-	
-  ]
+		{
+			"tag": "v1",
+			"new_classes": [
+				"ReminderScheduler"
+			]
+		},
+	]
 }
