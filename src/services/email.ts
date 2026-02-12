@@ -13,6 +13,9 @@ interface ResendEmailOptions {
 
 
 export class Emailservice {
+    sendPaymentReceipt(email: string, invoiceNumber: string, arg2: string, total: string, arg4: any, arg5: string, emailFromName: string | null | undefined) {
+        throw new Error('Method not implemented.');
+    }
   private apiKey: string;
   private fromEmail: string;
   private logger;
