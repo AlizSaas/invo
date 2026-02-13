@@ -11,7 +11,7 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 const config = defineConfig({
   build:{
-    sourcemap: import.meta.env.PROD ? 'hidden' : true,
+    sourcemap: process.env.NODE_ENV === 'production' ? 'hidden' : true,
   },
   resolve: {
     alias: {
@@ -33,11 +33,13 @@ const config = defineConfig({
     }),
     viteReact(),
       cloudflare({ viteEnvironment: { name: 'ssr' } }),
+...(process.env.SENTRY_AUTH_TOKEN ? [
       sentryVitePlugin({
-  org: "alizorganization",  // ← from your Organization Slug
-  project: "node-cloudflare-workers", // ← find this in Settings → Projects
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-}),
+        org: "alizorganization",
+        project: "node-cloudflare-workers",
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      })
+    ] : []),
   ],
 })
 
