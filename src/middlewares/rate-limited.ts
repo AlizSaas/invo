@@ -132,3 +132,10 @@ export const webhookRateLimiter = createRateLimitMiddleware({
   prefix: "rl:webhook",
   byUser: false,
 });
+
+export const forgetPasswordRateLimiter = createRateLimitMiddleware({
+  windowMs: 60 * 1000, // 1 minute window
+  maxRequests: 5, // Allow fewer requests for forget password to prevent abuse
+  prefix: "rl:forget-password",
+  byUser: false,
+}); // Specifically for forget password to prevent abuse 
