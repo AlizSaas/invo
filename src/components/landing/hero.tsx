@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { GitHubIcon } from "../icons/github";
 import { Logo } from "../icons/logo";
+import { ClientThreeBackground } from "./client-three-background";
 
 function InvoiceMockup() {
     return (
@@ -85,13 +86,15 @@ function InvoiceMockup() {
 export function Hero({ onViewDemo }: { onViewDemo: () => void }) {
     return (
         <section className="relative min-h-screen flex items-center pt-24 pb-20 px-6 overflow-hidden">
+            {/* Background layers */}
             <div className="absolute inset-0 grid-pattern opacity-30" />
+            <ClientThreeBackground />
 
-            <div className="relative z-10 max-w-6xl mx-auto w-full">
-                <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 items-center">
-                    {/* Left */}
-                    <div className="text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-secondary/50 text-sm mb-8">
+            <div className="relative z-10 max-w-7xl mx-auto w-full">
+                <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-20 lg:gap-16 items-center">
+                    {/* Left - Content */}
+                    <div className="text-center lg:text-left space-y-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-secondary/50 backdrop-blur-sm text-sm">
                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-subtle" />
                             <span className="text-muted-foreground">
                                 Built for motorcycle shops
@@ -102,53 +105,53 @@ export function Hero({ onViewDemo }: { onViewDemo: () => void }) {
                             </span>
                         </div>
 
-                        <h1 className="font-serif text-4xl md:text-5xl tracking-tight mb-6 leading-[1.1]">
+                        <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05]">
                             Invoicing made for{' '}
                             <span className="relative inline-block">
                                 <span className="relative z-10">
                                     motorcycle businesses.
                                 </span>
-                                <span className="absolute bottom-2 left-0 right-0 h-3 bg-primary/15 z-0" />
+                                <span className="absolute bottom-2 left-0 right-0 h-3 md:h-4 bg-primary/15 z-0" />
                             </span>
                         </h1>
 
-                        <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                             Simple invoicing for motorcycle shops, dealers, and
                             independent mechanics. Send service invoices, track
                             payments, and get paid faster — without paperwork.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                            <Button size="lg" className="rounded-full px-8" asChild>
+                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                            <Button size="lg" className="rounded-full px-8 h-12 text-base" asChild>
                                 <Link to="/dashboard">
                                     Start your shop
-                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                    <ArrowRight className="ml-2 h-5 w-5" />
                                 </Link>
                             </Button>
                             <Button
                                 variant="outline"
                                 size="lg"
-                                className="rounded-full px-6"
+                                className="rounded-full px-8 h-12 text-base backdrop-blur-sm"
                                 onClick={onViewDemo}
                             >
-                                <Play className="mr-2 h-4 w-4" />
+                                <Play className="mr-2 h-5 w-5" />
                                 See how it works
                             </Button>
                         </div>
                     </div>
 
-                    {/* Right */}
+                    {/* Right - Mockup */}
                     <div className="flex justify-center lg:justify-end">
                         <InvoiceMockup />
                     </div>
                 </div>
             </div>
 
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground/50">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground/50 animate-bounce-subtle">
                 <span className="text-xs uppercase tracking-widest">
                     Scroll
                 </span>
-                <div className="w-px h-8 bg-linear-to-b from-muted-foreground/30 to-transparent" />
+                <div className="w-px h-8 bg-gradient-to-b from-muted-foreground/30 to-transparent" />
             </div>
         </section>
     );
