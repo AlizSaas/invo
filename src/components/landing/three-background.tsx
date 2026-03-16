@@ -31,6 +31,7 @@ function Scene() {
       <OrbitControls
         enableZoom={false}
         enablePan={false}
+        enableRotate={false}
         autoRotate
         autoRotateSpeed={0.5}
       />
