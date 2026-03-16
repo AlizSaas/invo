@@ -8,7 +8,7 @@ import { useState } from 'react';
 export const Route = createFileRoute('/')({
   component: RouteComponent,
 })
-
+ 
 function RouteComponent() {
     const [isVideoOpen, setIsVideoOpen] = useState(false);
   return ( <div className='min-h-screen bg-background'>
