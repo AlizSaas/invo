@@ -29,6 +29,7 @@ import { Route as AppInvoicesNewRouteImport } from './routes/_app/invoices/new'
 import { Route as AppClientsNewRouteImport } from './routes/_app/clients/new'
 import { Route as AppClientsIdRouteImport } from './routes/_app/clients/$id'
 import { Route as AppInvoicesIdIndexRouteImport } from './routes/_app/invoices/$id/index'
+import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api/invoice/$id.pdf'
 import { Route as AppInvoicesIdEditRouteImport } from './routes/_app/invoices/$id/edit'
 import { Route as ApiPublicInvoiceTokenPdfRouteImport } from './routes/api/public/invoice/$token.pdf'
 
@@ -130,6 +131,11 @@ const AppInvoicesIdIndexRoute = AppInvoicesIdIndexRouteImport.update({
   path: '/invoices/$id/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
+  id: '/api/invoice/$id/pdf',
+  path: '/api/invoice/$id/pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppInvoicesIdEditRoute = AppInvoicesIdEditRouteImport.update({
   id: '/invoices/$id/edit',
   path: '/invoices/$id/edit',
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/reset-password/': typeof AuthResetPasswordIndexRoute
   '/signup/': typeof AuthSignupIndexRoute
   '/invoices/$id/edit': typeof AppInvoicesIdEditRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/invoices/$id/': typeof AppInvoicesIdIndexRoute
   '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordIndexRoute
   '/signup': typeof AuthSignupIndexRoute
   '/invoices/$id/edit': typeof AppInvoicesIdEditRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/invoices/$id': typeof AppInvoicesIdIndexRoute
   '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/_auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/_auth/signup/': typeof AuthSignupIndexRoute
   '/_app/invoices/$id/edit': typeof AppInvoicesIdEditRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/_app/invoices/$id/': typeof AppInvoicesIdIndexRoute
   '/api/public/invoice/$token/pdf': typeof ApiPublicInvoiceTokenPdfRoute
 }
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/reset-password/'
     | '/signup/'
     | '/invoices/$id/edit'
+    | '/api/invoice/$id/pdf'
     | '/invoices/$id/'
     | '/api/public/invoice/$token/pdf'
   fileRoutesByTo: FileRoutesByTo
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/invoices/$id/edit'
+    | '/api/invoice/$id/pdf'
     | '/invoices/$id'
     | '/api/public/invoice/$token/pdf'
   id:
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-password/'
     | '/_auth/signup/'
     | '/_app/invoices/$id/edit'
+    | '/api/invoice/$id/pdf'
     | '/_app/invoices/$id/'
     | '/api/public/invoice/$token/pdf'
   fileRoutesById: FileRoutesById
@@ -291,6 +303,7 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiSettingsLogoRoute: typeof ApiSettingsLogoRoute
   ApiWebhookStripeRoute: typeof ApiWebhookStripeRoute
+  ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicInvoiceTokenPdfRoute: typeof ApiPublicInvoiceTokenPdfRoute
 }
 
@@ -436,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppInvoicesIdIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/api/invoice/$id/pdf': {
+      id: '/api/invoice/$id/pdf'
+      path: '/api/invoice/$id/pdf'
+      fullPath: '/api/invoice/$id/pdf'
+      preLoaderRoute: typeof ApiInvoiceIdPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/invoices/$id/edit': {
       id: '/_app/invoices/$id/edit'
       path: '/invoices/$id/edit'
@@ -508,6 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiSettingsLogoRoute: ApiSettingsLogoRoute,
   ApiWebhookStripeRoute: ApiWebhookStripeRoute,
+  ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicInvoiceTokenPdfRoute: ApiPublicInvoiceTokenPdfRoute,
 }
 export const routeTree = rootRouteImport
