@@ -43,10 +43,12 @@ export const Route = createFileRoute('/api/invoice/$id/pdf')({
           })
         }
 
+        const safeFilename = pdf.filename.replace(/["\\\r\n]/g, '')
+
         return new Response(pdf.body, {
           headers: {
             'Content-Type': pdf.contentType,
-            'Content-Disposition': `inline; filename="${pdf.filename}"`,
+            'Content-Disposition': `inline; filename="${safeFilename}"`,
           },
         })
       },
