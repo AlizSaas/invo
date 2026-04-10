@@ -20,7 +20,7 @@ import { PageHeader } from '@/routes/_app/clients';
 import { toast } from 'sonner';
 import {  settingsQueryOptions } from '@/data/setting/fetch-setting';
 import { invoiceQueryOptions, INVOICES_QUERY_KEY } from '@/data/invoices/fetch-invoices';
-import { duplicateInvoiceFn, generatePdfFn, getInvoicePdfUrl, sendInvoiceFn } from '@/data/invoices/invoices';
+import { duplicateInvoiceFn, generatePdfFn, sendInvoiceFn } from '@/data/invoices/invoices';
 
 
 export function InvoiceDetailPage({invoiceId}: {invoiceId: string}) {
@@ -126,12 +126,7 @@ const duplicateMutation = useMutation({
   const canSend = invoice.status === 'draft';
   const canEdit = invoice.status === 'draft';
 
-  const handleViewPDF = async () => {
-  const response = await getInvoicePdfUrl({ data: { invoiceId: invoice.id } });
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  window.open(url, "_blank");
-};
+  const pdfUrl = invoice.pdfGeneratedAt ? `/api/invoice/${invoice.id}/pdf` : null;
 
 
   return (
@@ -322,19 +317,14 @@ const duplicateMutation = useMutation({
                 )}
                 Generate PDF
               </Button> 
-              {invoice.pdfGeneratedAt && (
-                
-                  <Button 
-
-                  onClick={handleViewPDF}
-                  
-                  
-                  variant="outline" className="w-full justify-start">
+              {pdfUrl && (
+                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="block">
+                  <Button variant="outline" className="w-full justify-start">
                     <Eye className="mr-2 h-4 w-4" />
                     View PDF
                   </Button>
-                
-              )} 
+                </a>
+              )}
               <Button
                 variant="outline"
                 className="w-full justify-start"
