@@ -6,7 +6,7 @@ import { checkSessionFn } from '@/data/session'
 export const Route = createFileRoute('/_auth')({
   component: RouteComponent,
   beforeLoad: async () => {
-    // if a user if found in the session, redirect to dashboard
+    // if a user is found in the session, redirect to dashboard
     const session = await checkSessionFn()
     
     if (session) {
