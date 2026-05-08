@@ -1,12 +1,17 @@
 import { buttonVariants } from '@/components/ui/button'
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
+import { checkSessionFn } from '@/data/session'
 
 export const Route = createFileRoute('/_auth')({
   component: RouteComponent,
   beforeLoad: async () => {
     // if a user if found in the session, redirect to dashboard
+    const session = await checkSessionFn()
     
+    if (session) {
+      throw redirect({ to: '/dashboard' })
+    }
   }
 })
 
