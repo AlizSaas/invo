@@ -67,7 +67,7 @@ function RouteComponent() {
       </div>
       
       <div>
-        <Link to="/clients" className={buttonVariants({ variant: 'default' })}>
+        <Link to="/invoices/new" className={buttonVariants({ variant: 'default' })}>
       <FileText className='mr-2 h-4 w-4'/>
         New Invoice
         
