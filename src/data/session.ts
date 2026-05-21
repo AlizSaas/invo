@@ -16,3 +16,12 @@ export const getSessionFn = createServerFn({ method: "GET" })
 
     return session;
   });
+
+export const checkSessionFn = createServerFn({ method: "GET" })
+  .middleware([dependencyMiddleware])
+  .handler(async ({ context }) => {
+    const headers = getRequestHeaders();
+    const session = await context.auth.api.getSession({ headers });
+
+    return session;
+  });
